@@ -44,8 +44,20 @@ public class Point {
 		return "(" + quantity + " ," + price + ")";
 	}
 	
+	public boolean equals(Object otherObject)
+	{
+		System.out.println("overRIDE equals is being called");
+		if (otherObject instanceof Point)
+		{
+			return equals((Point) otherObject);
+		}
+		
+		return false;
+	}
+	
 	public boolean equals(Point otherpoint)
 	{
+		System.out.println("overLOAD equals is being called");
 		if (quantity == otherpoint.getQuantity() && price == otherpoint.getPrice())
 		{
 			return true;

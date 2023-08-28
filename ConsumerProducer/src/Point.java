@@ -4,6 +4,7 @@
  * Purpose: 
  */
 public class Point {
+
 	private int quantity;
 	private double price;
 	
@@ -41,12 +42,11 @@ public class Point {
 	
 	public String toString()
 	{
-		return "(" + quantity + " ," + price + ")";
+		return "(" + quantity + ", " + price + ")";
 	}
 	
 	public boolean equals(Object otherObject)
 	{
-		System.out.println("overRIDE equals is being called");
 		if (otherObject instanceof Point)
 		{
 			return equals((Point) otherObject);
@@ -57,7 +57,6 @@ public class Point {
 	
 	public boolean equals(Point otherpoint)
 	{
-		System.out.println("overLOAD equals is being called");
 		if (quantity == otherpoint.getQuantity() && price == otherpoint.getPrice())
 		{
 			return true;

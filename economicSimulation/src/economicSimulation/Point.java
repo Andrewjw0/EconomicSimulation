@@ -71,7 +71,7 @@ public class Point
 	
 	public String toString()
 	{
-		return "("+quantity+" "+price+")";
+		return "("+quantity+", "+price+")";
 	}
  	
 	/**
@@ -79,7 +79,7 @@ public class Point
 	 */
 	public boolean equals(Object otherObj)
 	{
-		System.out.println("overRIDE equals is being called.");
+//		System.out.println("overRIDE equals is being called.");
 		if (otherObj instanceof Point)
 		{
 			return equals((Point) otherObj);

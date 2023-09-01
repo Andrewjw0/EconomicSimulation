@@ -1,20 +1,33 @@
+import java.util.*;
+
 package economicSimulation;
 
-public class ProducerCurve 
-{
-	private Point[] pCurveArray; // declares an array of Points. currently null
+public class ProducerCurve {
+	
+	private Point[] pCurveArray;
 	
 	public ProducerCurve()
 	{
-		pCurveArray = new Point[10]; // 10 empty slots instantiated
-	
-		// time to fill each one of those slots
-		for (int i = 0; i<pCurveArray.length; i++)
+		pCurveArray = new Point[10];
+		
+		for (int i = 0; i < pCurveArray.length; i++)
 		{
-			int q = i+1;
-			double p = i+1;
-			pCurveArray[i] = new Point(q,p);
+			int q = i + 1;
+			double p = i + 1.0;
+			pCurveArray[i] = new Point(q, p);
 		}
+	}
+	
+	public String toString()
+	{
+		String temp = "ProducerCurve: ";
+		
+		for (Point p : pCurveArray)
+		{
+			temp = temp + p.toString() + ", ";
+		} 
+		
+		return temp;
 	}
 	
 	public boolean search(Point op)
@@ -25,75 +38,150 @@ public class ProducerCurve
 			{
 				return true;
 			}
-			
 		}
+		
 		return false;
 	}
 	
-	 
-	
-	private int searchIndex(Point op)
+	private int searchForIndex(Point op)
 	{
-		for(int i=0; i<pCurveArray.length; i++)
+		for (int i = 0; i < pCurveArray.length; i++)
 		{
-			Point p = pCurveArray[i];
-			if (p.equals(op))
+			if (pCurveArray[i].equals(op))
 			{
 				return i;
 			}
 		}
+		
 		return -1;
 	}
 	
-	public void add(Point p)
+	private int searchForIndex(int q)
 	{
-		if (search(p) == true) 
+		for (int i = 0; i < pCurveArray.length; i++)
 		{
-			System.out.println("This point is already on the curve! Try a different one.");
-			return;
-		}
-		if (p.getQuantity() < 1 || p.getPrice() <= 0)
-		{
-			System.out.println("You can't use a negative or 0!");
+			if (pCurveArray[i].getQuantity() == q)
+			{
+				return i;
+			}
 		}
 		
-		Point[] newArray = new Point[pCurveArray.length+1];
-		for (int i=0; i<pCurveArray.length; i++)			
+		return -1;
+	}
+	
+	private int searchForIndex(double p)
+	{
+		for (int i = 0; i < pCurveArray.length; i++)
+		{
+			if (pCurveArray[i].getPrice() == p)
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private int searchMatchingQuantity(Point p)
+	{	
+		for (int i = 0; i < pCurveArray.length; i++)
+		{
+			Point temp = pCurveArray[i];
+			
+			if (p.getQuantity() == temp.getQuantity())
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	private void sortByQuantity()
+	{
+		Point[] tc = pCurveArray;
+		
+		for (int a = 0; a < tc.length; a++)
+		{
+			for (int i = 0; i < tc.length - 1; i++)
+			{
+				int rhi = i + 1;
+				Point leftP = tc[i];
+				Point rightP = tc[rhi];
+				
+				if (leftP.getQuantity() > rightP.getQuantity())
+				{
+					swap(i, rhi);
+				}
+			}
+		}
+	}
+	
+	public void add(Point p)
+	{	
+		if (search(p) == true)
+		{
+			return;
+		}
+		
+		if (p.getQuantity() <= 0)
+		{
+			return;
+		}
+		
+		if (p.getPrice() <= 0)
+		{
+			return;
+		}
+		
+		int index = searchMatchingQuantity(p);
+		
+		if (index >= 0) 
+		{
+			pCurveArray[index] = p;
+			return;
+		}
+		
+		Point[] newArray = new Point[pCurveArray.length + 1];
+		
+		for (int i = 0; i < pCurveArray.length; i++)
 		{
 			newArray[i] = pCurveArray[i];
 		}
-		newArray[newArray.length-1] = p;
+		
+		newArray[newArray.length - 1] = p;
 		pCurveArray = newArray;
 	}
 	
 	public void delete(Point p)
 	{
-		int foundIndex = searchIndex(p);
-		if(foundIndex==-1) 
+		int foundIndex = searchForIndex(p);
+		
+		if (foundIndex == -1)
 		{
-			System.out.println("Requested point for deletion does not exist! Try a point on the line.");
 			return;
 		}
-		Point tempArray[] = new Point[pCurveArray.length-1];
-		for(int i=0; i<foundIndex; i++)
+		
+		Point[] newArray = new Point[pCurveArray.length - 1];
+		
+		for (int i = 0; i < foundIndex; i++)
 		{
-			tempArray[i] = pCurveArray[i];
+			newArray[i] = pCurveArray[i];
 		}
-		for(int i=foundIndex; i<tempArray.length; i++)
+		
+		for (int i = foundIndex; i < newArray.length; i++)
 		{
-			tempArray[i] = pCurveArray[i+1];
+			newArray[i] = pCurveArray[i + 1];
 		}
-		pCurveArray = tempArray;
+		
+		pCurveArray = newArray;
 	}
 	
-	
-	public String toString()
+	private void swap(int i1, int i2)
 	{
-		String temp = "ProducerCurve: ";
-		for (Point p : pCurveArray)
-		{
-			temp = temp + p.toString();
-		}
-		return temp;
+		Point tp = pCurveArray[i1];
+		
+		pCurveArray[i1] = pCurveArray[i2];
+		pCurveArray[i2] = tp;
 	}
 }

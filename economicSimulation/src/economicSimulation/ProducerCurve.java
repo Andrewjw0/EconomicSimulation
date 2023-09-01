@@ -1,6 +1,6 @@
-import java.util.*;
-
 package economicSimulation;
+
+import java.util.*;
 
 public class ProducerCurve {
 	

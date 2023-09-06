@@ -1,7 +1,5 @@
 package economicSimulation;
 
-import java.util.*;
-
 public class ProducerCurve {
 	
 	private Point[] pCurveArray;
@@ -15,6 +13,22 @@ public class ProducerCurve {
 			int q = i + 1;
 			double p = i + 1.0;
 			pCurveArray[i] = new Point(q, p);
+		}
+	}
+	
+	public ProducerCurve(Point sp, Point ep, int numPoints)
+	{
+		pCurveArray = new Point[numPoints + 1];
+		pCurveArray[0] = sp;
+		
+		int    deltaQ = (int) Math.round((ep.getQuantity() - sp.getQuantity()) / (numPoints * 1.0));
+		double deltaP = (ep.getPrice() - sp.getPrice()) / (numPoints - 1);
+		
+		for (int i = 0; i < numPoints - 1; i++)
+		{
+			int    q = sp.getQuantity() + deltaQ * (i + 1);
+			double p = sp.getPrice() + deltaP * (i + 1);
+			pCurveArray[i + 1] = new Point(q, p);
 		}
 	}
 	
@@ -151,6 +165,7 @@ public class ProducerCurve {
 		
 		newArray[newArray.length - 1] = p;
 		pCurveArray = newArray;
+		sortByQuantity();
 	}
 	
 	public void delete(Point p)

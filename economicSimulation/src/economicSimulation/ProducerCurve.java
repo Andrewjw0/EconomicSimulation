@@ -18,7 +18,7 @@ public class ProducerCurve {
 	
 	public ProducerCurve(Point sp, Point ep, int numPoints)
 	{
-		pCurveArray = new Point[numPoints + 1];
+		pCurveArray = new Point[numPoints];
 		pCurveArray[0] = sp;
 		
 		int    deltaQ = (int) Math.round((ep.getQuantity() - sp.getQuantity()) / (numPoints * 1.0));

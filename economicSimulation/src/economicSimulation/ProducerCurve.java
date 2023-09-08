@@ -24,12 +24,14 @@ public class ProducerCurve {
 		int    deltaQ = (int) Math.round((ep.getQuantity() - sp.getQuantity()) / (numPoints * 1.0));
 		double deltaP = (ep.getPrice() - sp.getPrice()) / (numPoints - 1);
 		
-		for (int i = 0; i < numPoints - 1; i++)
+		for (int i = 1; i < numPoints - 1; i++)
 		{
-			int    q = sp.getQuantity() + deltaQ * (i + 1);
-			double p = sp.getPrice() + deltaP * (i + 1);
-			pCurveArray[i + 1] = new Point(q, p);
+			int    q = sp.getQuantity() + deltaQ * (i);
+			double p = sp.getPrice() + deltaP * (i);
+			pCurveArray[i] = new Point(q, p);
 		}
+		
+		pCurveArray[numPoints - 1] = ep;
 	}
 	
 	public String toString()

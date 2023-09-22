@@ -3,18 +3,23 @@ package abstractPackage;
 import java.util.*;
 
 public class ProducerCurve extends AbstractCurve
-{
-	private ArrayList<Point> pCurveArrayList;
-	
+{	
+	/**
+	 * Proper constructor, uses a starting point (sp)
+	 * and an ending point (ep) to fill in the ArrayList.
+	 * Number of points is specified with numPoints.
+	 */
 	public ProducerCurve(Point sp, Point ep, int numPoints)
 	{
 		super(sp, ep, numPoints);
-		pCurveArrayList = getCurveArrayList();
 	}
 	
+	/**
+	 * Sorts curveArrayList by quantity.
+	 */
 	public void sort()
 	{
-		ArrayList<Point> tc = pCurveArrayList;
+		ArrayList<Point> tc = getCurveArrayList();
 		
 		for (int a = 0; a < tc.size(); a++)
 		{
@@ -27,8 +32,8 @@ public class ProducerCurve extends AbstractCurve
 				if (leftP.getQuantity() > rightP.getQuantity())
 				{
 					swap(i, rhi);
-				} 	
-			} // end of individual cycle	
-		} // end of all cycles
-	} // end of sort()
+				}
+			}
+		}
+	}
 }

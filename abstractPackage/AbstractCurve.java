@@ -2,18 +2,25 @@ package abstractPackage;
 
 import java.util.*;
 
-
-public abstract class AbstractCurve implements CurveInterface
-{ // needs to declare field variable of type ArrayList<Point>
+public abstract class AbstractCurve implements CurveInterface 
+{
 	private ArrayList<Point> curveArrayList;
-
+	
 	/**
 	 * Proper constructor, uses a starting point (sp)
-	 * and an ending point (ep) to fill in the ArrayList
-	 * Number of points is specified with numPoints
+	 * and an ending point (ep) to fill in the ArrayList.
+	 * Number of points is specified with numPoints.
 	 */
-	public AbstractCurve(Point sp, Point ep, int numPoints)
+	
+	public AbstractCurve(Point sp, Point ep, int numPoints) 
 	{
+		if (sp.getQuantity() == ep.getQuantity()) 
+		{
+			curveArrayList = new ArrayList<Point>(1);
+			curveArrayList.add(ep);
+			return;
+		}
+		
 		curveArrayList = new ArrayList<Point>(numPoints + 1);
 		curveArrayList.add(sp);
 		
@@ -29,78 +36,16 @@ public abstract class AbstractCurve implements CurveInterface
 		
 		curveArrayList.add(ep);
 	}
-	
+
 	/**
 	 * Returns curveArrayList because 
 	 * we're not allowed to make it protected.
 	 */
-	public ArrayList<Point> getCurveArrayList()
+	public ArrayList getCurveArrayList()
 	{
 		return curveArrayList;
 	}
-	
-	/**
-	 * Adds Point p to the curve.
-	 * Doesn't add p if:
-	 * - p is on the curve
-	 * - p has a quantity/price of 0 or less
-	 * - p has an identical quantity to one of the points (SWAPS)
-	 * If all these checks are cleared, adds p and sorts
-	 */
-	public void add(Point p)
-	{
-		// Checks if p is on the line, if so doesn't add
-		if (search(p) == true)
-		{
-			System.out.println("Point is already on the curve!");
-			return;
-		}
-				
-		// Checks if p has a quantity below or equal to 0, if so doesn't add
-		if (p.getQuantity() <= 0)
-		{
-			System.out.println("Quantity can't be 0 or less!");
-			return;
-		}
-				
-		// Checks if p has a price below or equal to 0, if so doesn't add
-		if (p.getPrice() <= 0)
-		{
-			System.out.println("Price can't be less than or equal to 0!");
-			return;
-		}
-				
-		// Checks if p has a matching quantity on the line, if so swaps instead
-		int index = searchQuantity(p);
-				
-		if (index <= 0) 
-		{
-			curveArrayList.set(index, p);
-			return;
-		}
-				
-		curveArrayList.add(p);
-				
-		sort(); // Sorts to keep points in order
-	}
-	
-	/**
-	 * Deletes a Point.
-	 * Prints out a message if the point is off the line.
-	 */
-	public void delete(Point p)
-	{
-		if (search(p))
-		{
-			curveArrayList.remove(searchForIndex(p));
-			return;
-		}
-		System.out.println("Point not found on the line!");
-	}
-	
-	/**
-	 * Prints out each Point on the curve.
-	 */
+		
 	public String toString()
 	{
 		String temp = "Curve: ";
@@ -109,21 +54,19 @@ public abstract class AbstractCurve implements CurveInterface
 		{
 			temp = temp + p.toString() + ", ";
 		} 
-			
+		
 		return temp;
 	}
 	
-	// SEARCH METHODS-----------------------------------------------------
-	
 	/**
-	 * Searches for an identical Point on the curve.
+	 * Searches for a Point with quantity and price equal to op on the curve.
 	 * If there is one, returns true
 	 */
-	public boolean search(Point p)
+	public boolean search(Point op)
 	{
-		for (Point pt : curveArrayList)
+		for (Point p : curveArrayList)
 		{
-			if (pt.equals(p))
+			if (p.equals(op))
 			{
 				return true;
 			}
@@ -131,17 +74,16 @@ public abstract class AbstractCurve implements CurveInterface
 		
 		return false;
 	}
-	
+
 	/**
-	 * Searches for Point p on the curveArrayList.
-	 * If there, returns the index.  
-	 * Otherwise returns -1 (impossible index)
+	 * Searches for a Point with quantity and price equal to op on the curve.
+	 * If there is one, return the index. Otherwise return -1 (impossible index).
 	 */
-	private int searchForIndex(Point p)
+	private int searchForIndex(Point op)
 	{
 		for (int i = 0; i < curveArrayList.size(); i++)
 		{
-			if (curveArrayList.get(i).equals(p))
+			if (curveArrayList.get(i).equals(op))
 			{
 				return i;
 			}
@@ -151,11 +93,10 @@ public abstract class AbstractCurve implements CurveInterface
 	}
 	
 	/**
-	 * Searches for quantity of Point p on the curveArrayList.
-	 * If there, returns the index.  
-	 * Otherwise returns -1 (impossible index)
+	 * Searches for a Point with quantity and price equal to op on the curve.
+	 * If there is one, return the index. Otherwise return -1 (impossible index).
 	 */
-	private int searchQuantity(Point p)
+	private int searchMatchingQuantity(Point op)
 	{
 		ArrayList<Point> tc = curveArrayList;
 		
@@ -163,7 +104,7 @@ public abstract class AbstractCurve implements CurveInterface
 		{
 			Point temp = tc.get(i);
 			
-			if (p.getQuantity() == temp.getQuantity())
+			if (op.getQuantity() == temp.getQuantity())
 			{
 				return i;
 			}
@@ -173,35 +114,66 @@ public abstract class AbstractCurve implements CurveInterface
 	}
 	
 	/**
-	 * Searches for price of Point p on the curveArrayList.
-	 * If there, returns the index.  
-	 * Otherwise returns -1 (impossible index)
-	 */
-	private int searchPrice(Point p)
-	{
-		ArrayList<Point> tc = curveArrayList;
-		
-		for (int i = 0; i < tc.size(); i++)
-		{
-			Point temp = tc.get(i);
-			
-			if (p.getPrice() == temp.getPrice())
-			{
-				return i;
-			}
-		}
-		
-		return -1;
-	}
-	// END OF SEARCH METHODS----------------------------------------------
-	
-	/**
-	 * Sort method is abstract because
-	 * ProducerCurve and ConsumerCurve will
-	 * sort differently.
+	 * Sorts curveArrayList by quantity.
 	 */
 	public abstract void sort();
+
+	/**
+	 * Adds Point p to the curve.
+	 * Doesn't add p if:
+	 * - p is on the curve
+	 * - p has a quantity/price of 0 or less
+	 * - p has an identical quantity to one of the points (SWAPS)
+	 * If all these checks are cleared, adds p and sorts.
+	 */
+	public void add(Point p)
+	{
+		// Checks if p is on the line, if so doesn't add
+		if (search(p) == true)
+		{
+			return;
+		}
+		
+		// Checks if p has a quantity below or equal to 0, if so doesn't add
+		if (p.getQuantity() <= 0)
+		{
+			return;
+		}
+		
+		// Checks if p has a price below or equal to 0, if so doesn't add
+		if (p.getPrice() <= 0)
+		{
+			return;
+		}
+		
+		// Checks if p has a matching quantity on the line, if so swaps instead
+		int index = searchMatchingQuantity(p);
+		
+		if (index >= 0) 
+		{
+			curveArrayList.set(index, p);
+			return;
+		}
+		
+		curveArrayList.add(p);
+		
+		sort(); // Sorts to keep points in order
+	}
 	
+	/**
+	 * Deletes p if it's on the line.
+	 */
+	public void delete(Point p)
+	{
+		if (search(p))
+		{
+			curveArrayList.remove(searchForIndex(p));
+		}
+	}
+	
+	/**
+	 * Swaps i1 and i2's positions, helper method.
+	 */
 	public void swap(int i1, int i2)
 	{
 		ArrayList tc = curveArrayList;
